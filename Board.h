@@ -1,21 +1,39 @@
 #ifndef BOARD_H
 #define BOARD_H
-#include "vector"
-#include "Piece.h"
-#include "position.h"
+
+#include <vector>
 #include <optional>
-class Board{
-    std::array<std::array<std::optional<Piece>, 8>, 8> cells;
+#include "Piece.h"
+#include "Position.h"
+#include "Checker.h"
+#include "King.h"
+class Board {
     public:
-    Board(const Board& other);
-    const std::optional<Piece>& at(int row, int col) const;
+        int width;
+        int height;
+        std::vector<std::vector<Piece*>> board;
     
+        void setPiece(const Position& pos, Piece* piece); 
+        void removePiece(const Position& pos);
+        void promotePiece(const Position& pos);
+
 
     
+        Board(int width, int height);                        
+        Board(int width, int height, const std::vector<std::pair<Position, Piece*>>& initialPieces); 
+        Board(const Board& other);  
+        Board& operator=(const Board& other);                         
+        ~Board();
 
-};
+
+        int getWidth() const;
+        int getHeight() const;
+        void print() const;
+
+        Piece* getPiece(Position pos);
+        const Piece* getPiece(Position pos) const;
+        bool isValid(const Position& pos) const;
+
+    };
 
 #endif
-
-//принцип по которому строим дерево позиций
-//как проверяем, что именно этот ход приводят к победе

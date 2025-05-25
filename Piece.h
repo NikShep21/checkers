@@ -1,28 +1,24 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-
-enum class PieceType{
-    DEFAULT,
-    KING
-};
+#include "Position.h"
+#include <vector>
 enum class PieceColor{
-    WHILE,
+    WHITE,
     BLACK
+
 };
-
-class Piece{
-    PieceType type;
-    PieceColor color;
-
+class Piece {
+    protected:
+        PieceColor color;
+        Piece(PieceColor color) : color(color) {}
+        
     public:
-
-    Piece(PieceColor color, PieceType type);
-    PieceColor getColor() const;
-    bool isKing() const;
-    void promote();
-
+        PieceColor getColor() const { return color; }
+        virtual std::vector<Position> getMoves(const Position& from, int boardWidth, int boardHeight) const = 0;
+        virtual Piece* clone() const = 0;
+        virtual std::vector<Position> getCaptureMoves(const Position& from, int boardWidth, int boardHeight) const = 0;
+            
+            
 };
-
-
 #endif
