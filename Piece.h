@@ -3,11 +3,15 @@
 
 #include "Position.h"
 #include <vector>
+#include "Move.h"
+
 enum class PieceColor{
     WHITE,
     BLACK
 
 };
+class Board;
+// родительский класс для шашки и дамки
 class Piece {
     protected:
         PieceColor color;
@@ -15,9 +19,12 @@ class Piece {
         
     public:
         PieceColor getColor() const { return color; }
-        virtual std::vector<Position> getMoves(const Position& from, int boardWidth, int boardHeight) const = 0;
         virtual Piece* clone() const = 0;
-        virtual std::vector<Position> getCaptureMoves(const Position& from, int boardWidth, int boardHeight) const = 0;
+        // метод для получения возможных ходов
+        virtual std::vector<Move> getMoves(const Position& from, const Board& board) const = 0;
+        // метод для получения возможных взятий(не множественных)
+        virtual std::vector<Move> getCaptures(const Position& from, const Board& board) const = 0;
+
             
             
 };

@@ -7,7 +7,7 @@
 
 struct Position {
     int x, y;
-
+    Position();
     Position(int x, int y);
     Position(const std::string& str);
 

@@ -1,8 +1,0 @@
-White:3
-A1
-B2
-C3
-A1
-Black:2
-F1
-MA3

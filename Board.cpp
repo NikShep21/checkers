@@ -1,37 +1,35 @@
 #include "Board.h"
 #include <iostream>
 
-// Конструктор по размеру
 Board::Board(int width, int height)
     : width(width), height(height), board(height, std::vector<Piece*>(width, nullptr)) {}
 
-// Конструктор с начальными фигурами
 Board::Board(int width, int height, const std::vector<std::pair<Position, Piece*>>& initialPieces)
     : Board(width, height) {
-    for (const auto& [pos, piece] : initialPieces) {
+    for (std::vector<std::pair<Position, Piece*>>::const_iterator it = initialPieces.begin(); it != initialPieces.end(); ++it) {
+        const Position& pos = it->first;
+        Piece* piece = it->second;
         if (isValid(pos)) {
             board[pos.y][pos.x] = piece;
         }
     }
 }
 
-// Копирующий конструктор (глубокая копия)
 Board::Board(const Board& other)
     : width(other.width), height(other.height), board(height, std::vector<Piece*>(width, nullptr)) {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             if (other.board[y][x]) {
-                board[y][x] = other.board[y][x]->clone(); // глубокая копия фигуры
+                board[y][x] = other.board[y][x]->clone(); 
             }
         }
     }
 }
 
-// Оператор присваивания (глубокая копия)
 Board& Board::operator=(const Board& other) {
     if (this == &other) return *this;
 
-    // Удалим старые фигуры
+    // Удаляем старые фигуры
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             delete board[y][x];
@@ -55,7 +53,6 @@ Board& Board::operator=(const Board& other) {
     return *this;
 }
 
-// Деструктор
 Board::~Board() {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
@@ -64,7 +61,6 @@ Board::~Board() {
     }
 }
 
-// Вспомогательные методы
 void Board::setPiece(const Position& pos, Piece* piece) {
     if (isValid(pos)) {
         delete board[pos.y][pos.x]; // удаляем старую фигуру, если есть
@@ -75,18 +71,6 @@ void Board::removePiece(const Position& pos) {
     if (isValid(pos)) {
         delete board[pos.y][pos.x];
         board[pos.y][pos.x] = nullptr;
-    }
-}
-
-// Здесь можно реализовать превращение шашки в дамку
-void Board::promotePiece(const Position& pos) {
-    if (!isValid(pos) || !board[pos.y][pos.x]) return;
-
-    Piece* original = board[pos.y][pos.x];
-    if (dynamic_cast<Checker*>(original)) {
-        PieceColor color = original->getColor();
-        delete original;
-        board[pos.y][pos.x] = new King(color);
     }
 }
 
@@ -136,4 +120,27 @@ void Board::print() const {
         }
         std::cout << '\n';
     }
+}
+
+void Board::transformFigure(const Position& pos) {
+    if (!isValid(pos)) return;
+
+    Piece* original = getPiece(pos);
+    if (!original) return;
+
+    if (dynamic_cast<Checker*>(original)) {
+        PieceColor color = original->getColor();
+        removePiece(pos); 
+        setPiece(pos, new King(color));
+    }
+}
+
+void Board::move(const Position& from, const Position& to) {
+    if (!isValid(from) || !isValid(to)) return;
+
+    Piece* piece = getPiece(from);
+    if (!piece) return;
+    removePiece(to);
+    setPiece(to, piece->clone());
+    removePiece(from);
 }

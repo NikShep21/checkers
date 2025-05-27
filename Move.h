@@ -3,18 +3,29 @@
 
 #include "Position.h"
 #include <vector>
-#include <cmath>
 
-// Represents a move: a sequence of positions (for multi-capture moves)
+//один ход: путь фигуры и список побитых фигур
 struct Move {
-    std::vector<Position> path; // includes starting and subsequent landing positions
+    std::vector<Position> path;   // путь: начальная и все последующие позиции
+    std::vector<Position> taken;  // побитые фигуры (позиции)
 
-    bool isCapture() const {
-        if (path.size() < 2) return false;
-        // A capture moves over an opponent piece (diagonal distance > 1) or has more than one jump
-        return path.size() > 2 ||
-               (std::abs(path[0].x - path[1].x) > 1 && std::abs(path[0].y - path[1].y) > 1);
-    }
+    Move() = default;
+
+    // Конструктор для простого хода без взятий
+    Move(const std::vector<Position>& path)
+        : path(path) {}
+
+    // Конструктор для взятий
+    Move(const std::vector<Position>& path, const std::vector<Position>& taken)
+        : path(path), taken(taken) {}
+
+    const std::vector<Position>& getPath() const { return path; }
+    const std::vector<Position>& getTaken() const { return taken; }
+
+   
+    // Начальная и конечная позиции
+    Position from() const { return path.front(); }
+    Position to() const { return path.back(); }
 };
 
 #endif

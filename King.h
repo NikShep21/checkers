@@ -5,9 +5,11 @@
 class King: public Piece {
     public:
         King(PieceColor color);
-        std::vector<Position> getMoves(const Position& from, int boardWidth, int boardHeight) const override;
+        std::vector<Move> getMoves(const Position& from, const Board& board) const override;
         Piece* clone() const override;
-        std::vector<Position> getCaptureMoves(const Position& from, int boardWidth, int boardHeight) const override;
+        std::vector<Move> getCaptures(const Position& from, const Board& board) const override;
+
 };
+
 
 #endif
